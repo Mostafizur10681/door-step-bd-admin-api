@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        if (Schema::hasTable('thanas')) { return; }
+
+                Schema::create('thanas', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('district_id')->constrained('districts')->cascadeOnDelete();
+            $table->string('name');
+            $table->string('bn_name');
+            $table->string('code')->unique();
+            $table->string('postal_code')->nullable();
+            $table->tinyInteger('status')->default(1);
+            $table->softDeletes();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('thanas');
+    }
+};

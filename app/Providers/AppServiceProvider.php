@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+
+// Users, Roles & Permissions
+use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Repositories\Eloquent\UserRepository;
+use App\Repositories\Interfaces\RoleRepositoryInterface;
+use App\Repositories\Eloquent\RoleRepository;
+use App\Repositories\Interfaces\PermissionRepositoryInterface;
+use App\Repositories\Eloquent\PermissionRepository;
+
+// E-commerce Modules
+use App\Repositories\Interfaces\CategoryRepositoryInterface;
+use App\Repositories\Eloquent\CategoryRepository;
+use App\Repositories\Interfaces\ProductRepositoryInterface;
+use App\Repositories\Eloquent\ProductRepository;
+use App\Repositories\Interfaces\AttributeRepositoryInterface;
+use App\Repositories\Eloquent\AttributeRepository;
+use App\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Repositories\Eloquent\OrderRepository;
+use App\Repositories\Interfaces\CustomerRepositoryInterface;
+use App\Repositories\Eloquent\CustomerRepository;
+use App\Repositories\Interfaces\ReviewRepositoryInterface;
+use App\Repositories\Eloquent\ReviewRepository;
+use App\Repositories\Interfaces\FaqRepositoryInterface;
+use App\Repositories\Eloquent\FaqRepository;
+use App\Repositories\Interfaces\SubscriptionRepositoryInterface;
+use App\Repositories\Eloquent\SubscriptionRepository;
+use App\Repositories\Interfaces\BrandRepositoryInterface;
+use App\Repositories\Eloquent\BrandRepository;
+use App\Repositories\Interfaces\WishlistRepositoryInterface;
+use App\Repositories\Eloquent\WishlistRepository;
+use App\Repositories\Interfaces\AddressRepositoryInterface;
+use App\Repositories\Eloquent\AddressRepository;
+use App\Repositories\Interfaces\CustomerProfileRepositoryInterface;
+use App\Repositories\Eloquent\CustomerProfileRepository;
+use App\Repositories\Interfaces\DivisionRepositoryInterface;
+use App\Repositories\Eloquent\DivisionRepository;
+use App\Repositories\Interfaces\DistrictRepositoryInterface;
+use App\Repositories\Eloquent\DistrictRepository;
+use App\Repositories\Interfaces\ThanaRepositoryInterface;
+use App\Repositories\Eloquent\ThanaRepository;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        // Bindings
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
+        $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
+        $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
+        $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
+        $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
+        $this->app->bind(AttributeRepositoryInterface::class, AttributeRepository::class);
+        $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
+        $this->app->bind(CustomerRepositoryInterface::class, CustomerRepository::class);
+        $this->app->bind(ReviewRepositoryInterface::class, ReviewRepository::class);
+        $this->app->bind(FaqRepositoryInterface::class, FaqRepository::class);
+        $this->app->bind(SubscriptionRepositoryInterface::class, SubscriptionRepository::class);
+        $this->app->bind(BrandRepositoryInterface::class, BrandRepository::class);
+        $this->app->bind(WishlistRepositoryInterface::class, WishlistRepository::class);
+        $this->app->bind(AddressRepositoryInterface::class, AddressRepository::class);
+        $this->app->bind(CustomerProfileRepositoryInterface::class, CustomerProfileRepository::class);
+        $this->app->bind(DivisionRepositoryInterface::class, DivisionRepository::class);
+        $this->app->bind(DistrictRepositoryInterface::class, DistrictRepository::class);
+        $this->app->bind(ThanaRepositoryInterface::class, ThanaRepository::class);
+
+        // Register dev-only packages conditionally
+        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        //
+    }
+}
