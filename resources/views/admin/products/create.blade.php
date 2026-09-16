@@ -279,7 +279,7 @@
                                 type="text" 
                                 name="brand" 
                                 x-model="brand" 
-                                placeholder="e.g. Shopia, Apex" 
+                                placeholder="e.g. Door Step BD, Apex, Nike..." 
                                 class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500 transition-colors"
                             >
                         </div>

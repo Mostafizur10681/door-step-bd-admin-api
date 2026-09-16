@@ -10,7 +10,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Admin Panel' }} — SMT Mart BD Admin Panel</title>
+    <title>{{ $title ?? 'Admin Panel' }} — Door Step BD Admin Panel</title>
     
     <!-- Anti-FOUC Theme Initializer -->
     <script>
@@ -117,7 +117,7 @@
 
     <!-- Footer Copyright -->
     <footer class="mt-8 text-center text-xs text-slate-400 dark:text-slate-500 relative z-10">
-        &copy; {{ date('Y') }} SMT Mart BD Admin Panel. All rights reserved.
+        &copy; {{ date('Y') }} Door Step BD Admin Panel. All rights reserved.
     </footer>
 
 </body>

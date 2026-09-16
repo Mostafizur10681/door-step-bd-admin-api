@@ -1,6 +1,6 @@
-# 🚀 CI/CD VPS Deployment Guide for SMT Mart BD Admin & API
+# 🚀 CI/CD VPS Deployment Guide for Door Step BD Admin & API
 
-This repository includes a ready-to-use **GitHub Actions CI/CD workflow** located at [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) that automatically tests and deploys your Laravel Admin Panel & API to your VPS on every `git push` to `main`.
+This repository includes a ready-to-use **GitHub Actions CI/CD workflow** that automatically tests and deploys your Laravel Admin Panel & API to your VPS on every `git push` to `main`.
 
 ---
 
@@ -13,12 +13,12 @@ Add the following **Repository Secrets**:
 
 | Secret Name | Description | Example / Value |
 | :--- | :--- | :--- |
-| `SSH_HOST` | VPS IP address or hostname | `123.45.67.89` or `admin.smtmartbd.com` |
+| `SSH_HOST` | VPS IP address or hostname | `123.45.67.89` or `admin.doorstepbd.com` |
 | `SSH_USER` | VPS SSH username | `root` or `ubuntu` |
 | `SSH_PRIVATE_KEY` | VPS Private SSH Key *(Recommended)* | Content of `~/.ssh/id_rsa` or `~/.ssh/id_ed25519` |
 | `SSH_PASSWORD` | VPS SSH Password *(If not using SSH Key)* | `your_vps_root_password` |
 | `SSH_PORT` | SSH Port *(Optional, default 22)* | `22` |
-| `DEPLOY_PATH` | Path where project will live *(Optional)* | `/var/www/admin.smtmartbd.com` |
+| `DEPLOY_PATH` | Path where project will live *(Optional)* | `/var/www/admin.doorstepbd.com` |
 
 ---
 
@@ -57,28 +57,28 @@ node -v && npm -v
 ### 4. Create Web Directory & Set Permissions
 ```bash
 # Create directory
-sudo mkdir -p /var/www/admin.smtmartbd.com
+sudo mkdir -p /var/www/admin.doorstepbd.com
 
 # Give current user and www-data ownership
-sudo chown -R $USER:www-data /var/www/admin.smtmartbd.com
-sudo chmod -R 775 /var/www/admin.smtmartbd.com
+sudo chown -R $USER:www-data /var/www/admin.doorstepbd.com
+sudo chmod -R 775 /var/www/admin.doorstepbd.com
 
 # Clone the repository for the first time
-git clone https://github.com/Mostafizur10681/smt-mart-admin-api.git /var/www/admin.smtmartbd.com
+git clone https://github.com/Mostafizur10681/door-step-bd-admin-api.git /var/www/admin.doorstepbd.com
 
 # Create/Upload your production .env manually
-nano /var/www/admin.smtmartbd.com/.env
+nano /var/www/admin.doorstepbd.com/.env
 # (Paste your production environment variables, save with CTRL+O, exit with CTRL+X)
 ```
 
 ### 5. Configure Nginx Web Server
 Copy the template from `deploy/nginx/admin.conf` to Nginx:
 ```bash
-sudo cp /var/www/admin.smtmartbd.com/deploy/nginx/admin.conf /etc/nginx/sites-available/admin.smtmartbd.com.conf
+sudo cp /var/www/admin.doorstepbd.com/deploy/nginx/admin.conf /etc/nginx/sites-available/admin.doorstepbd.com.conf
 ```
 Enable the site and restart Nginx:
 ```bash
-sudo ln -s /etc/nginx/sites-available/admin.smtmartbd.com.conf /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/admin.doorstepbd.com.conf /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 ```
@@ -86,15 +86,15 @@ sudo systemctl reload nginx
 ### 6. Install Free SSL Certificate (Let's Encrypt)
 ```bash
 sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d admin.smtmartbd.com
+sudo certbot --nginx -d admin.doorstepbd.com
 ```
 
 ### 7. (Optional) Setup Queue Worker Supervisor
 ```bash
-sudo cp /var/www/admin.smtmartbd.com/deploy/supervisor/queue-worker.conf /etc/supervisor/conf.d/
+sudo cp /var/www/admin.doorstepbd.com/deploy/supervisor/queue-worker.conf /etc/supervisor/conf.d/
 sudo supervisorctl reread
 sudo supervisorctl update
-sudo supervisorctl start smt-mart-worker:*
+sudo supervisorctl start doorstep-bd-worker:*
 ```
 
 ---

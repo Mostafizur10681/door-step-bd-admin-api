@@ -6,7 +6,7 @@
     <!-- Header Logo & Title -->
     <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center p-3 rounded-2xl bg-white shadow-md border border-slate-100 dark:border-slate-800 mb-3">
-            <img src="{{ asset('logo.png') }}" alt="SMT Mart BD Logo" class="h-10 w-auto object-contain">
+            <img src="{{ asset('logo.png') }}" alt="Door Step BD Logo" class="h-10 w-auto object-contain">
         </div>
         <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Welcome Back</h1>
         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Sign in to manage your e-commerce platform</p>

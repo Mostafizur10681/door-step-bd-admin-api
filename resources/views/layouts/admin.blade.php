@@ -12,7 +12,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Admin Panel' }} — SMT Mart BD Admin Panel</title>
+    <title>{{ $title ?? 'Admin Panel' }} — Door Step BD Admin Panel</title>
     
     <!-- Anti-FOUC Theme Initializer -->
     <script>
@@ -95,10 +95,10 @@
         <div class="flex items-center h-16 px-4 border-b border-slate-200 dark:border-slate-800/80" :class="sidebarCollapsed ? 'justify-center px-2' : 'justify-between px-5'">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 group overflow-hidden">
                 <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white p-1 border border-slate-200/80 dark:border-slate-700/80 shadow-xs shrink-0 group-hover:scale-105 transition-transform">
-                    <img src="{{ asset('favicon-32x32.png') }}" alt="SMT Mart BD" class="h-7 w-7 object-contain">
+                    <img src="{{ asset('favicon-32x32.png') }}" alt="Door Step BD" class="h-7 w-7 object-contain">
                 </div>
                 <div x-show="!sidebarCollapsed" class="flex flex-col min-w-0">
-                    <span class="tracking-tight text-slate-900 dark:text-white font-black text-base leading-tight truncate">SMT Mart BD</span>
+                    <span class="tracking-tight text-slate-900 dark:text-white font-black text-base leading-tight truncate">Door Step BD</span>
                     <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-wider uppercase">Admin Panel</span>
                 </div>
             </a>
@@ -651,10 +651,10 @@
         <div class="flex items-center justify-between h-16 px-5 border-b border-slate-200 dark:border-slate-800">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5">
                 <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-white p-1 border border-slate-200/80 dark:border-slate-700/80 shadow-xs shrink-0">
-                    <img src="{{ asset('favicon-32x32.png') }}" alt="SMT Mart BD" class="h-6 w-6 object-contain">
+                    <img src="{{ asset('favicon-32x32.png') }}" alt="Door Step BD" class="h-6 w-6 object-contain">
                 </div>
                 <div class="flex flex-col">
-                    <span class="tracking-tight text-slate-900 dark:text-white font-black text-base leading-tight">SMT Mart BD</span>
+                    <span class="tracking-tight text-slate-900 dark:text-white font-black text-base leading-tight">Door Step BD</span>
                     <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-wider uppercase">Admin Panel</span>
                 </div>
             </a>

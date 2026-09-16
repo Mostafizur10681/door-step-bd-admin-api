@@ -323,7 +323,7 @@
                                 type="text" 
                                 name="brand" 
                                 value="{{ old('brand', $product->brand) }}" 
-                                placeholder="e.g. SMT Mart BD, Organic Life, Nike..." 
+                                placeholder="e.g. Door Step BD, Organic Life, Nike..." 
                                 class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors"
                             >
                         </div>

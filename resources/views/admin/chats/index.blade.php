@@ -765,7 +765,7 @@
                                 <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2 pt-0.5">
                                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-0.5">Quick:</span>
                                     <button type="button"
-                                            @click="insertQuickReply('👋 Hello! Welcome to SMT Mart BD support. How may I assist you today?')"
+                                            @click="insertQuickReply('👋 Hello! Welcome to Door Step BD support. How may I assist you today?')"
                                             class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 dark:bg-slate-800 dark:hover:bg-emerald-950/60 dark:hover:text-emerald-300 text-slate-700 dark:text-slate-200 font-semibold text-[11px] transition border border-slate-200 dark:border-slate-700 shrink-0">
                                         👋 Welcome
                                     </button>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice #{{ $order->order_number }} — SMT Mart BD</title>
+    <title>Invoice #{{ $order->order_number }} — Door Step BD</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -542,7 +542,7 @@
                             </svg>
                         </div>
                         <div>
-                            <div class="brand-title">SMT Mart BD</div>
+                            <div class="brand-title">Door Step BD</div>
                             <div class="brand-subtitle">Official Invoice & Memo</div>
                         </div>
                     </div>
@@ -550,8 +550,8 @@
                     <div class="brand-contact">
                         <p><strong>Address:</strong> {{ $contact->address ?? ($footer->contact_address ?? 'Dhaka, Bangladesh') }}</p>
                         <p><strong>Helpline:</strong> <span class="font-mono">{{ $contact->phone ?? ($footer->contact_phone ?? '+880 1879-198066') }}</span></p>
-                        <p><strong>Email:</strong> <span class="font-mono">{{ $contact->email ?? ($footer->contact_email ?? 'support@smtmartbd.com') }}</span></p>
-                        <p><strong>Website:</strong> <span class="font-mono">www.smtmartbd.com</span></p>
+                        <p><strong>Email:</strong> <span class="font-mono">{{ $contact->email ?? ($footer->contact_email ?? 'support@doorstepbd.com') }}</span></p>
+                        <p><strong>Website:</strong> <span class="font-mono">www.doorstepbd.com</span></p>
                     </div>
                 </div>
 
@@ -815,12 +815,12 @@
                     <div class="signature-block">
                         <div class="signature-line"></div>
                         <div class="signature-text">Authorized Signature</div>
-                        <div class="signature-sub">SMT Mart BD Operations</div>
+                        <div class="signature-sub">Door Step BD Operations</div>
                     </div>
                 </div>
 
                 <div class="disclaimer">
-                    Thank you for choosing SMT Mart BD! This is an official computer-generated invoice and requires no physical signature for digital copies.
+                    Thank you for choosing Door Step BD! This is an official computer-generated invoice and requires no physical signature for digital copies.
                 </div>
             </div>
 
