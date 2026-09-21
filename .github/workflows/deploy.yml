@@ -22,7 +22,6 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY || secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
-          envs: GITHUB_SHA
           script_stop: true
           script: |
             # Set target directory (fallback to default if secret is not set)
@@ -32,11 +31,16 @@ jobs:
 
             # Ensure target directory exists
             if [ ! -d "$TARGET_DIR" ]; then
-              echo "❌ Directory $TARGET_DIR does not exist. Please clone the repository first as per documentation."
+              echo "❌ Directory $TARGET_DIR does not exist. Please clone the repository first."
               exit 1
             fi
 
             cd "$TARGET_DIR"
+
+            # Verify manual .env exists on server
+            if [ ! -f "$TARGET_DIR/.env" ]; then
+              echo "⚠️ Warning: .env file not found in $TARGET_DIR! Please create your .env manually on the VPS."
+            fi
 
             # Enable maintenance mode
             echo "⏸️ Enabling maintenance mode..."
@@ -92,4 +96,4 @@ jobs:
             echo "▶️ Disabling maintenance mode..."
             php artisan up
 
-            echo "✅ Deployment completed successfully for commit $GITHUB_SHA!"
+            echo "✅ Deployment completed successfully!"
