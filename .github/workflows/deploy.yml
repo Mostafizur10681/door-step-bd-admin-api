@@ -50,6 +50,13 @@ jobs:
 
             trap cleanup EXIT
 
+            # Load environment PATH and NVM if available
+            export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
+            if [ -s "$HOME/.nvm/nvm.sh" ]; then
+                export NVM_DIR="$HOME/.nvm"
+                \. "$NVM_DIR/nvm.sh"
+            fi
+
             cd "$DEPLOY_DIR"
 
             echo "📍 Current directory:"
@@ -93,13 +100,15 @@ jobs:
               --retry=60 \
               || true
 
-            echo "📦 Installing Node dependencies..."
+            if command -v npm > /dev/null 2>&1; then
+                echo "📦 Installing Node dependencies..."
+                npm ci --prefer-offline --no-audit || npm install
 
-            npm ci --prefer-offline --no-audit || npm install
-
-            echo "🎨 Building Vite assets..."
-
-            npm run build
+                echo "🎨 Building Vite assets..."
+                npm run build
+            else
+                echo "ℹ️ npm not found in PATH, skipping Vite asset build."
+            fi
 
             echo "🗄️ Running database migrations..."
 
