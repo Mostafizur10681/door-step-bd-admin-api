@@ -20,12 +20,11 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY || secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT || 22 }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
           script_stop: true
           script: |
-            # Set target directory (fallback to default if secret is not set)
-            TARGET_DIR="${{ secrets.DEPLOY_PATH || '/var/www/admin.doorstepbd.org' }}"
+            TARGET_DIR="${{ secrets.DEPLOY_PATH }}"
 
             echo "🚀 Starting deployment to $TARGET_DIR..."
 
