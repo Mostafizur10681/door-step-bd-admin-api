@@ -6,7 +6,7 @@
     <!-- Page Header -->
     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Door Step BD E-commerce Dashboard</h1>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">E-commerce Dashboard</h1>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Welcome back! Here is an overview of your store's live performance and transactions.</p>
         </div>
         <div class="flex items-center gap-2">
