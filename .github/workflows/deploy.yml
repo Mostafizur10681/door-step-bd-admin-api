@@ -1,98 +1,156 @@
-name: Deploy Admin & API to VPS
+name: Deploy Laravel Admin API
 
 on:
   push:
     branches:
       - main
+
   workflow_dispatch:
 
 jobs:
   deploy:
-    name: Deploy to Production VPS
+    name: Deploy Laravel Admin API to VPS
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy to VPS via SSH
-        uses: appleboy/ssh-action@v1.2.0
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.2.2
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script_stop: true
+          host: ${{ secrets.VPS_HOST || secrets.SSH_HOST }}
+          username: ${{ secrets.VPS_USERNAME || secrets.SSH_USER }}
+          key: ${{ secrets.VPS_SSH_KEY || secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_PORT || secrets.SSH_PORT || 22 }}
+
           script: |
-            TARGET_DIR="${{ secrets.DEPLOY_PATH }}"
+            set -Eeuo pipefail
 
-            echo "🚀 Starting deployment to $TARGET_DIR..."
+            DEPLOY_DIR="/var/www/admin.doorstepbd.org"
 
-            # Ensure target directory exists
-            if [ ! -d "$TARGET_DIR" ]; then
-              echo "❌ Directory $TARGET_DIR does not exist. Please clone the repository first."
-              exit 1
-            fi
+            echo "========================================="
+            echo "🚀 Starting Laravel deployment"
+            echo "📁 $DEPLOY_DIR"
+            echo "========================================="
 
-            cd "$TARGET_DIR"
+            cleanup() {
+                EXIT_CODE=$?
 
-            # Verify manual .env exists on server
-            if [ ! -f "$TARGET_DIR/.env" ]; then
-              echo "⚠️ Warning: .env file not found in $TARGET_DIR! Please create your .env manually on the VPS."
-            fi
+                if [ "$EXIT_CODE" -ne 0 ]; then
+                    echo ""
+                    echo "❌ Deployment failed!"
+                    echo "🔄 Bringing Laravel application back online..."
 
-            # Enable maintenance mode
-            echo "⏸️ Enabling maintenance mode..."
-            php artisan down --retry=60 || true
+                    cd "$DEPLOY_DIR" 2>/dev/null || true
+                    php artisan up 2>/dev/null || true
 
-            # Pull latest changes from git
-            echo "📥 Fetching latest code from main branch..."
+                    echo "❌ Deployment stopped with exit code: $EXIT_CODE"
+                fi
+
+                exit "$EXIT_CODE"
+            }
+
+            trap cleanup EXIT
+
+            cd "$DEPLOY_DIR"
+
+            echo "📍 Current directory:"
+            pwd
+
+            git config --global --add safe.directory "$DEPLOY_DIR" || true
+
+            echo "📥 Fetching latest code..."
+
             git fetch origin main
+
+            echo "🔄 Updating project to latest main..."
+
             git reset --hard origin/main
 
-            # Install/update Composer dependencies
-            echo "📦 Installing PHP dependencies..."
-            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+            echo "📌 Current commit:"
+            git rev-parse --short HEAD
 
-            # Install Node dependencies and compile production assets
-            if [ -f "package.json" ]; then
-              echo "🎨 Building frontend assets..."
-              npm ci --prefer-offline --no-audit || npm install
-              npm run build
+            if [ ! -f ".env" ]; then
+                echo "❌ ERROR: .env file not found!"
+                echo "Please create /var/www/admin.doorstepbd.org/.env"
+                exit 1
             fi
 
-            # Run database migrations
+            echo "✅ Production .env found"
+
+            echo "📦 Installing Composer dependencies..."
+
+            export COMPOSER_ALLOW_SUPERUSER=1
+
+            composer install \
+              --no-dev \
+              --optimize-autoloader \
+              --no-interaction \
+              --prefer-dist
+
+            echo "🔒 Enabling Laravel maintenance mode..."
+
+            php artisan down \
+              --render="errors::503" \
+              --retry=60 \
+              || true
+
+            echo "📦 Installing Node dependencies..."
+
+            npm ci --prefer-offline --no-audit || npm install
+
+            echo "🎨 Building Vite assets..."
+
+            npm run build
+
             echo "🗄️ Running database migrations..."
+
             php artisan migrate --force
 
-            # Create storage symlink if not exists
-            echo "🔗 Linking storage..."
+            echo "🔗 Creating storage symlink..."
+
             php artisan storage:link || true
 
-            # Optimize and cache configuration, routes, and views
-            echo "⚡ Optimizing Laravel caches..."
-            php artisan config:clear
-            php artisan cache:clear
-            php artisan route:clear
-            php artisan view:clear
+            echo "🧹 Clearing Laravel caches..."
+
+            php artisan optimize:clear
+
+            echo "⚡ Caching Laravel configuration..."
 
             php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            php artisan event:cache
 
-            # Restart queue workers if supervisor / queue is running
-            echo "🔄 Restarting queue workers..."
+            echo "🛣️ Caching Laravel routes..."
+
+            php artisan route:cache
+
+            echo "👁️ Caching Laravel views..."
+
+            php artisan view:cache
+
+            echo "📡 Caching Laravel events..."
+
+            php artisan event:cache || true
+
+            echo "🛡️ Fixing Laravel permissions..."
+
+            chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
+            chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+
+            echo "🔄 Restarting Laravel queue workers..."
+
             php artisan queue:restart || true
 
-            # Reload PHP-FPM if sudo permissions allow
-            if command -v systemctl > /dev/null 2>&1; then
-              echo "🔄 Reloading PHP-FPM..."
-              sudo systemctl reload php8.2-fpm 2>/dev/null || sudo systemctl reload php8.3-fpm 2>/dev/null || sudo systemctl reload php-fpm 2>/dev/null || true
-            fi
+            echo "🔄 Reloading PHP-FPM..."
 
-            # Disable maintenance mode
-            echo "▶️ Disabling maintenance mode..."
+            systemctl reload php8.2-fpm 2>/dev/null || systemctl reload php8.3-fpm 2>/dev/null || true
+
+            echo "✨ Bringing Laravel application online..."
+
             php artisan up
 
+            trap - EXIT
+
+            echo ""
+            echo "========================================="
             echo "✅ Deployment completed successfully!"
+            echo "📌 Commit: $(git rev-parse --short HEAD)"
+            echo "🌐 https://admin.doorstepbd.org"
+            echo "========================================="
