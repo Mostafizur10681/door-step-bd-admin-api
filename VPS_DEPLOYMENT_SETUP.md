@@ -1,6 +1,6 @@
 # 🚀 CI/CD VPS Deployment Guide for Door Step BD Admin & API
 
-This repository includes a ready-to-use **GitHub Actions CI/CD workflow** that automatically tests and deploys your Laravel Admin Panel & API to your VPS on every `git push` to `main`.
+This repository includes a ready-to-use **GitHub Actions CI/CD workflow** that automatically deploys your Laravel Admin Panel & API to your VPS on every `git push` to `main` (or manual trigger).
 
 ---
 
@@ -13,12 +13,11 @@ Add the following **Repository Secrets**:
 
 | Secret Name | Description | Example / Value |
 | :--- | :--- | :--- |
-| `SSH_HOST` | VPS IP address or hostname | `123.45.67.89` or `admin.doorstepbd.com` |
+| `SSH_HOST` | VPS IP address or hostname | `123.45.67.89` or `admin.doorstepbd.org` |
 | `SSH_USER` | VPS SSH username | `root` or `ubuntu` |
-| `SSH_PRIVATE_KEY` | VPS Private SSH Key *(Recommended)* | Content of `~/.ssh/id_rsa` or `~/.ssh/id_ed25519` |
-| `SSH_PASSWORD` | VPS SSH Password *(If not using SSH Key)* | `your_vps_root_password` |
+| `SSH_PRIVATE_KEY` | VPS Private SSH Key | Content of your private SSH key (e.g. `~/.ssh/id_rsa` or `~/.ssh/id_ed25519`) |
 | `SSH_PORT` | SSH Port *(Optional, default 22)* | `22` |
-| `DEPLOY_PATH` | Path where project will live *(Optional)* | `/var/www/admin.doorstepbd.com` |
+| `DEPLOY_PATH` | Server project directory | `/var/www/admin.doorstepbd.org` |
 
 ---
 
@@ -56,29 +55,33 @@ node -v && npm -v
 
 ### 4. Create Web Directory & Set Permissions
 ```bash
-# Create directory
-sudo mkdir -p /var/www/admin.doorstepbd.com
+# Create target directory
+sudo mkdir -p /var/www/admin.doorstepbd.org
 
-# Give current user and www-data ownership
-sudo chown -R $USER:www-data /var/www/admin.doorstepbd.com
-sudo chmod -R 775 /var/www/admin.doorstepbd.com
+# Set ownership to current user and www-data
+sudo chown -R $USER:www-data /var/www/admin.doorstepbd.org
+sudo chmod -R 775 /var/www/admin.doorstepbd.org
 
 # Clone the repository for the first time
-git clone https://github.com/Mostafizur10681/door-step-bd-admin-api.git /var/www/admin.doorstepbd.com
+git clone https://github.com/Mostafizur10681/door-step-bd-admin-api.git /var/www/admin.doorstepbd.org
 
-# Create/Upload your production .env manually
-nano /var/www/admin.doorstepbd.com/.env
-# (Paste your production environment variables, save with CTRL+O, exit with CTRL+X)
+# Navigate into directory
+cd /var/www/admin.doorstepbd.org
+
+# Create production .env file
+cp .env.example .env
+nano .env
+# (Configure APP_ENV=production, APP_DEBUG=false, APP_URL=https://admin.doorstepbd.org, DB credentials, etc.)
 ```
 
 ### 5. Configure Nginx Web Server
 Copy the template from `deploy/nginx/admin.conf` to Nginx:
 ```bash
-sudo cp /var/www/admin.doorstepbd.com/deploy/nginx/admin.conf /etc/nginx/sites-available/admin.doorstepbd.com.conf
+sudo cp /var/www/admin.doorstepbd.org/deploy/nginx/admin.conf /etc/nginx/sites-available/admin.doorstepbd.org.conf
 ```
 Enable the site and restart Nginx:
 ```bash
-sudo ln -s /etc/nginx/sites-available/admin.doorstepbd.com.conf /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/admin.doorstepbd.org.conf /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 ```
@@ -86,12 +89,12 @@ sudo systemctl reload nginx
 ### 6. Install Free SSL Certificate (Let's Encrypt)
 ```bash
 sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d admin.doorstepbd.com
+sudo certbot --nginx -d admin.doorstepbd.org
 ```
 
 ### 7. (Optional) Setup Queue Worker Supervisor
 ```bash
-sudo cp /var/www/admin.doorstepbd.com/deploy/supervisor/queue-worker.conf /etc/supervisor/conf.d/
+sudo cp /var/www/admin.doorstepbd.org/deploy/supervisor/queue-worker.conf /etc/supervisor/conf.d/
 sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl start doorstep-bd-worker:*
@@ -104,11 +107,12 @@ sudo supervisorctl start doorstep-bd-worker:*
 Whenever you push to the `main` branch or click **Run workflow** manually under the **Actions** tab in GitHub:
 
 1. Connects securely via SSH to your VPS.
-2. Pulls the latest commits.
-3. Automatically syncs `.env` configuration.
-4. Installs and optimizes Composer packages.
-5. Builds Vite / Tailwind assets (`npm run build`).
+2. Puts application into maintenance mode (`php artisan down`).
+3. Pulls latest changes (`git fetch & reset`).
+4. Installs optimized Composer packages (`composer install --no-dev`).
+5. Installs npm packages and builds Vite assets (`npm run build`).
 6. Runs database migrations (`php artisan migrate --force`).
-7. Creates storage symlink (`php artisan storage:link`).
-8. Caches configs, routes, and views for lightning-fast response times.
-9. Resets queue workers and reloads PHP-FPM.
+7. Ensures storage link is created (`php artisan storage:link`).
+8. Caches configs, routes, views, and events (`config:cache`, `route:cache`, `view:cache`, `event:cache`).
+9. Restarts background queue workers & reloads PHP-FPM.
+10. Brings application out of maintenance mode (`php artisan up`).
