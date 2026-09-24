@@ -212,6 +212,35 @@
                 </div>
             </div>
 
+            <!-- Our Services Menu (Collapsible) -->
+            <div x-data="{ open: {{ request()->is('admin/services*') ? 'true' : 'false' }} }" class="space-y-1">
+                <button 
+                    @click="if(sidebarCollapsed) { sidebarCollapsed = false; open = true; } else { open = !open; }" 
+                    type="button" 
+                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 {{ request()->is('admin/services*') ? 'bg-slate-100 dark:bg-slate-800/80 text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-white' }}"
+                    :class="sidebarCollapsed && 'justify-center px-2'"
+                    title="Our Services"
+                >
+                    <div class="flex items-center gap-3">
+                        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.07a4.5 4.5 0 0 0 4.486-6.32l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.32 4.486c.118.58.094 1.193-.07 1.743" />
+                        </svg>
+                        <span x-show="!sidebarCollapsed">Our Services</span>
+                    </div>
+                    <svg x-show="!sidebarCollapsed" class="h-4 w-4 text-slate-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div x-show="open && !sidebarCollapsed" x-collapse class="pl-4 pr-1 py-1 space-y-1 text-xs">
+                    <a href="{{ route('admin.services.index') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ (request()->routeIs('admin.services.index') || request()->routeIs('admin.services.show') || request()->routeIs('admin.services.edit')) ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
+                        <span class="mr-2">○</span> All Services
+                    </a>
+                    <a href="{{ route('admin.services.create') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.services.create') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
+                        <span class="mr-2">○</span> Add Service
+                    </a>
+                </div>
+            </div>
+
             <!-- Orders Menu (Collapsible) -->
             <div x-data="{ open: {{ request()->is('admin/orders*') ? 'true' : 'false' }} }" class="space-y-1">
                 <button 
@@ -669,6 +698,7 @@
             <a href="{{ route('admin.products.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/products*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Products</a>
             <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ (request()->is('admin/categories*') || request()->is('admin/sub-categories*')) ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Categories</a>
             <a href="{{ route('admin.attributes.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/attributes*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Attributes</a>
+            <a href="{{ route('admin.services.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/services*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Our Services</a>
             <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/orders*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Orders</a>
             <a href="{{ route('admin.coupons.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/coupons*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Coupons</a>
             <a href="{{ route('admin.banners.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/banners*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Banners</a>

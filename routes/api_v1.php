@@ -16,6 +16,7 @@ use App\Http\Controllers\API\V1\SubscriptionController;
 use App\Http\Controllers\API\V1\ChatController;
 use App\Http\Controllers\API\V1\BlogController;
 use App\Http\Controllers\API\V1\CouponController;
+use App\Http\Controllers\API\V1\ServiceController;
 use Illuminate\Support\Facades\Route;
 
 // Health Check API
@@ -63,6 +64,10 @@ Route::get('blogs', [BlogController::class, 'index']);
 Route::get('blogs/{slug}', [BlogController::class, 'show']);
 Route::get('blog-categories', [BlogController::class, 'categories']);
 Route::post('blogs/{slug}/comments', [BlogController::class, 'storeComment']);
+
+// Public Services Routes (http://localhost:3000/services or /solutions)
+Route::get('services', [ServiceController::class, 'index']);
+Route::get('services/{identifier}', [ServiceController::class, 'show']);
 
 // Public Location Routes
 Route::get('divisions', [\App\Http\Controllers\API\V1\DivisionController::class, 'index']);

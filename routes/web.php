@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\ServiceController;
 
 // Root redirect to admin
 Route::get('/', function () {
@@ -170,5 +171,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/blogs/comments/{id}', [BlogController::class, 'destroyComment'])->name('blogs.comments.destroy');
 
         Route::resource('blogs', BlogController::class);
+
+        // Our Services Management System
+        Route::post('/services/{id}/toggle-status', [ServiceController::class, 'toggleStatus'])->name('services.toggle-status');
+        Route::resource('services', ServiceController::class);
     });
 });
