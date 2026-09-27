@@ -626,44 +626,88 @@ class AdminController extends Controller
     }
 
     // Brand Management
-    public function brandsIndex(): JsonResponse
+    public function brandsIndex(Request $request): JsonResponse
     {
-        $brands = $this->adminService->paginateBrands(50);
+        $perPage = (int) $request->query('per_page', 50);
+        $brands = $this->adminService->paginateBrands($perPage);
         return $this->success($brands, 'Brands retrieved successfully');
     }
 
     public function brandsStore(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'logo' => 'nullable|string',
+            'name' => 'required|string|max:255|unique:brands,name',
+            'slug' => 'nullable|string|max:255|unique:brands,slug',
+            'logo' => 'nullable',
             'status' => 'nullable|boolean',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
-        $brand = $this->adminService->createBrand($validated);
+        $validated['slug'] = !empty($validated['slug']) ? Str::slug($validated['slug']) : Str::slug($validated['name']);
+        $validated['status'] = $request->boolean('status', true);
 
+        if ($request->hasFile('logo')) {
+            $validated['logo'] = $this->uploadImage($request->file('logo'), 'brands');
+        } elseif (!empty($validated['logo']) && is_string($validated['logo'])) {
+            if (str_starts_with($validated['logo'], 'data:image/') || strlen($validated['logo']) > 100) {
+                $validated['logo'] = $this->uploadBase64Image($validated['logo'], 'brands');
+            }
+        }
+
+        $brand = $this->adminService->createBrand($validated);
         return $this->success($brand, 'Brand created successfully', 201);
+    }
+
+    public function brandsShow(string $id): JsonResponse
+    {
+        $brand = \App\Models\Brand::findOrFail($id);
+        return $this->success($brand, 'Brand details retrieved');
     }
 
     public function brandsUpdate(Request $request, string $id): JsonResponse
     {
+        $brand = \App\Models\Brand::findOrFail($id);
+
         $validated = $request->validate([
-            'name' => 'nullable|string|max:255',
-            'logo' => 'nullable|string',
+            'name' => 'sometimes|required|string|max:255|unique:brands,name,' . $brand->id,
+            'slug' => 'nullable|string|max:255|unique:brands,slug,' . $brand->id,
+            'logo' => 'nullable',
             'status' => 'nullable|boolean',
         ]);
 
-        if (isset($validated['name'])) {
+        if (isset($validated['name']) && empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['name']);
         }
 
-        $this->adminService->updateBrand($id, array_filter($validated));
-        return $this->success([], 'Brand updated successfully');
+        if ($request->has('status')) {
+            $validated['status'] = $request->boolean('status');
+        }
+
+        if ($request->hasFile('logo')) {
+            if ($brand->logo) {
+                $this->deleteImage($brand->logo);
+            }
+            $validated['logo'] = $this->uploadImage($request->file('logo'), 'brands');
+        } elseif (!empty($validated['logo']) && is_string($validated['logo'])) {
+            if (str_starts_with($validated['logo'], 'data:image/') || strlen($validated['logo']) > 100) {
+                if ($brand->logo) {
+                    $this->deleteImage($brand->logo);
+                }
+                $validated['logo'] = $this->uploadBase64Image($validated['logo'], 'brands');
+            }
+        }
+
+        $this->adminService->updateBrand($id, array_filter($validated, function ($val) {
+            return $val !== null;
+        }));
+        return $this->success($brand->fresh(), 'Brand updated successfully');
     }
 
     public function brandsDestroy(string $id): JsonResponse
     {
+        $brand = \App\Models\Brand::findOrFail($id);
+        if ($brand->logo) {
+            $this->deleteImage($brand->logo);
+        }
         $this->adminService->deleteBrand($id);
         return $this->success([], 'Brand deleted successfully');
     }

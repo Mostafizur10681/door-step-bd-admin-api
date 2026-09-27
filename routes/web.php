@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\SubCategoryController;
+use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -59,6 +60,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Categories & Sub Categories
         Route::resource('categories', CategoryController::class);
         Route::resource('sub-categories', SubCategoryController::class);
+
+        // Brands
+        Route::post('/brands/{id}/toggle-status', [BrandController::class, 'toggleStatus'])->name('brands.toggle-status');
+        Route::resource('brands', BrandController::class);
 
         // Attributes
         Route::resource('attributes', AttributeController::class);

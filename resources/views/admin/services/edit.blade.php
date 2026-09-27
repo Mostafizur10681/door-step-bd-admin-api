@@ -89,11 +89,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Service Title *</label>
-                    <input type="text" name="title" value="{{ old('title', $service->title) }}" required placeholder="e.g. Doorstep Computer Repair" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 font-semibold">
+                    <input type="text" name="title" x-model="title" @input="updateSlug()" required placeholder="e.g. Doorstep Computer Repair" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 font-semibold">
                 </div>
                 <div class="space-y-1">
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Custom Slug</label>
-                    <input type="text" name="slug" value="{{ old('slug', $service->slug) }}" placeholder="auto-generated-from-title" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white font-mono">
+                    <input type="text" name="slug" x-model="slug" placeholder="auto-generated-from-title" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white font-mono">
                 </div>
             </div>
 
@@ -198,9 +198,21 @@ let serviceEditQuill;
 
 function serviceEditForm() {
     return {
+        title: @json(old('title', $service->title)),
+        slug: @json(old('slug', $service->slug)),
         selectedIcon: @json($service->icon ?: '🛠️'),
         iconPresets: ['🛠️', '🚀', '🚚', '⚡', '🛡️', '📦', '💻', '⚙️', '🧹', '🎨', '🌐', '🔧'],
         imageBase64: @json($service->image ?: ''),
+        updateSlug() {
+            if (!this.title) {
+                this.slug = '';
+                return;
+            }
+            this.slug = this.title.toString().toLowerCase().trim()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/[\s_-]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+        },
         handleFileChange(event) {
             const file = event.target.files[0];
             if (file) {

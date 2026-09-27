@@ -31,6 +31,8 @@ Route::get('/faq-categories', [AdminController::class, 'faqCategoriesIndex']);
 Route::get('/faq-categories/{id}', [AdminController::class, 'faqCategoriesShow']);
 Route::get('/faqs', [\App\Http\Controllers\API\V1\FaqController::class, 'index']);
 Route::get('/faqs/{id}', [\App\Http\Controllers\API\V1\FaqController::class, 'show']);
+Route::get('/brands', [\App\Http\Controllers\API\V1\BrandController::class, 'index']);
+Route::get('/brands/{brand}', [\App\Http\Controllers\API\V1\BrandController::class, 'show']);
 Route::get('/contact-settings', [\App\Http\Controllers\API\V1\ContactSettingController::class, 'index']);
 Route::get('/whatsapp-settings', [\App\Http\Controllers\API\V1\ContactSettingController::class, 'whatsappIndex']);
 Route::post('/coupons/apply', [\App\Http\Controllers\API\V1\CouponController::class, 'apply']);

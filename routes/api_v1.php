@@ -17,6 +17,7 @@ use App\Http\Controllers\API\V1\ChatController;
 use App\Http\Controllers\API\V1\BlogController;
 use App\Http\Controllers\API\V1\CouponController;
 use App\Http\Controllers\API\V1\ServiceController;
+use App\Http\Controllers\API\V1\BrandController;
 use Illuminate\Support\Facades\Route;
 
 // Health Check API
@@ -28,6 +29,8 @@ Route::get('/health', function () {
 });
 
 // Public Catalog Routes
+Route::get('brands', [BrandController::class, 'index']);
+Route::get('brands/{brand}', [BrandController::class, 'show']);
 Route::get('categories', [CategoryController::class, 'index']);
 Route::get('categories/{category}', [CategoryController::class, 'show']);
 Route::get('products', [ProductController::class, 'index']);

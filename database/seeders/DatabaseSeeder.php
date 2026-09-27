@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             WishlistSeeder::class,
             OrderStatusSeeder::class,
             BannerSeeder::class,
+            BrandSeeder::class,
         ]);
 
         // User::factory(10)->create();

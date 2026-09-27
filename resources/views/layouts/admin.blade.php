@@ -183,6 +183,36 @@
                 </div>
             </div>
 
+            <!-- Brands Menu (Collapsible) -->
+            <div x-data="{ open: {{ request()->is('admin/brands*') ? 'true' : 'false' }} }" class="space-y-1">
+                <button 
+                    @click="if(sidebarCollapsed) { sidebarCollapsed = false; open = true; } else { open = !open; }" 
+                    type="button" 
+                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 {{ request()->is('admin/brands*') ? 'bg-slate-100 dark:bg-slate-800/80 text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-white' }}"
+                    :class="sidebarCollapsed && 'justify-center px-2'"
+                    title="Brands"
+                >
+                    <div class="flex items-center gap-3">
+                        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.386l4.412-2.59c.783-.46.994-1.482.476-2.185L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                        </svg>
+                        <span x-show="!sidebarCollapsed">Brands</span>
+                    </div>
+                    <svg x-show="!sidebarCollapsed" class="h-4 w-4 text-slate-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div x-show="open && !sidebarCollapsed" x-collapse class="pl-4 pr-1 py-1 space-y-1 text-xs">
+                    <a href="{{ route('admin.brands.index') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ (request()->routeIs('admin.brands.index') || request()->routeIs('admin.brands.edit')) ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
+                        <span class="mr-2">○</span> All Brands
+                    </a>
+                    <a href="{{ route('admin.brands.create') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.brands.create') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
+                        <span class="mr-2">○</span> Add Brand
+                    </a>
+                </div>
+            </div>
+
             <!-- Attributes Menu (Collapsible) -->
             <div x-data="{ open: {{ request()->is('admin/attributes*') ? 'true' : 'false' }} }" class="space-y-1">
                 <button 
@@ -697,6 +727,7 @@
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Dashboard</a>
             <a href="{{ route('admin.products.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/products*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Products</a>
             <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ (request()->is('admin/categories*') || request()->is('admin/sub-categories*')) ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Categories</a>
+            <a href="{{ route('admin.brands.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/brands*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Brands</a>
             <a href="{{ route('admin.attributes.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/attributes*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Attributes</a>
             <a href="{{ route('admin.services.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/services*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Our Services</a>
             <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/orders*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Orders</a>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Service;
 use App\Traits\UploadImageTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ServiceController extends Controller
 {
@@ -58,9 +59,11 @@ class ServiceController extends Controller
             'status' => 'required|in:active,inactive',
         ]);
 
+        $data['slug'] = !empty($data['slug']) ? Str::slug($data['slug']) : Str::slug($data['title']);
+
         if ($request->hasFile('image_file')) {
             $data['image'] = $this->uploadImage($request->file('image_file'), 'services');
-        } elseif (!empty($data['image']) && str_starts_with($data['image'], 'data:image')) {
+        } elseif (!empty($data['image']) && Str::startsWith($data['image'], 'data:image')) {
             $data['image'] = $this->uploadBase64Image($data['image'], 'services');
         }
 
@@ -98,10 +101,12 @@ class ServiceController extends Controller
             'status' => 'required|in:active,inactive',
         ]);
 
+        $data['slug'] = !empty($data['slug']) ? Str::slug($data['slug']) : Str::slug($data['title']);
+
         if ($request->hasFile('image_file')) {
             $this->deleteImage($service->image);
             $data['image'] = $this->uploadImage($request->file('image_file'), 'services');
-        } elseif (!empty($data['image']) && str_starts_with($data['image'], 'data:image')) {
+        } elseif (!empty($data['image']) && Str::startsWith($data['image'], 'data:image')) {
             $data['image'] = $this->uploadBase64Image($data['image'], 'services');
         }
 
