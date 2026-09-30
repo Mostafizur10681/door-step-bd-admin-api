@@ -7,6 +7,7 @@
     title_line1: {{ Js::from($banner->title_line1 ?? ($banner->title ?? '')) }},
     title_line2: {{ Js::from($banner->title_line2 ?? '') }},
     subtitle: {{ Js::from($banner->subtitle ?? '') }},
+    description: {{ Js::from(old('description', $banner->description ?? '')) }},
     cta_text: {{ Js::from($banner->cta_text ?? '') }},
     cta_link: {{ Js::from($banner->cta_link ?? '/') }},
     bg_color: {{ Js::from($banner->bg_color ?: '#002B49') }},
@@ -26,6 +27,7 @@
             (this.title_line1 && this.title_line1.trim().length > 0) ||
             (this.title_line2 && this.title_line2.trim().length > 0) ||
             (this.subtitle && this.subtitle.trim().length > 0) ||
+            (this.description && this.description.trim().length > 0) ||
             (this.cta_text && this.cta_text.trim().length > 0)
         );
     },
@@ -35,6 +37,7 @@
         this.title_line1 = '';
         this.title_line2 = '';
         this.subtitle = '';
+        this.description = '';
         this.cta_text = '';
     },
 
@@ -228,6 +231,11 @@
                                 <p class="text-sm sm:text-lg md:text-xl font-bold text-amber-200 drop-shadow-sm tracking-wide" x-text="subtitle"></p>
                             </template>
 
+                            <!-- Description -->
+                            <template x-if="description && description.trim().length > 0">
+                                <p class="text-xs sm:text-sm text-slate-200 line-clamp-2 max-w-xl drop-shadow-sm leading-relaxed" x-text="description"></p>
+                            </template>
+
                             <!-- CTA Button -->
                             <template x-if="cta_text && cta_text.trim().length > 0">
                                 <div class="pt-2">
@@ -291,6 +299,10 @@
 
                         <template x-if="subtitle && subtitle.trim().length > 0">
                             <p class="text-xs font-bold text-amber-200" x-text="subtitle"></p>
+                        </template>
+
+                        <template x-if="description && description.trim().length > 0">
+                            <p class="text-[11px] text-slate-200 line-clamp-2 leading-tight" x-text="description"></p>
                         </template>
 
                         <template x-if="cta_text && cta_text.trim().length > 0">
@@ -441,6 +453,20 @@
                         </label>
                         <input type="text" name="cta_text" x-model="cta_text" placeholder="e.g. SHOP NOW (or leave blank)" class="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
                     </div>
+                </div>
+
+                <!-- Banner Description (Optional) -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                        Banner Description (Optional)
+                    </label>
+                    <textarea 
+                        name="description" 
+                        x-model="description" 
+                        rows="3" 
+                        placeholder="Detailed promotional description, details, or supporting message for this banner..." 
+                        class="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition resize-none"
+                    >{{ old('description', $banner->description ?? '') }}</textarea>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

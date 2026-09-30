@@ -184,6 +184,11 @@
                                             {{ $banner->subtitle }}
                                         </div>
                                     @endif
+                                    @if($banner->description)
+                                        <div class="text-slate-500 dark:text-slate-400 text-[10px] line-clamp-1 max-w-xs">
+                                            {{ $banner->description }}
+                                        </div>
+                                    @endif
                                 </div>
                             </td>
 

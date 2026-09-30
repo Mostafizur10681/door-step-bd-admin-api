@@ -14,30 +14,25 @@ class BrandController extends Controller
     use ApiResponseTrait;
 
     /**
-     * Display a listing of active brands for the public website / store catalog.
+     * Display a listing of active brands for website / store catalog.
+     * Website shows brand logo/image, name, and description.
      */
     public function index(Request $request): JsonResponse
     {
         $query = Brand::where('status', 1);
 
-        // Search by name, sub_title, or category_tag
+        // Search by name or description
         if ($request->filled('search')) {
             $s = trim($request->search);
             $query->where(function ($q) use ($s) {
                 $q->where('name', 'like', "%{$s}%")
-                  ->orWhere('sub_title', 'like', "%{$s}%")
-                  ->orWhere('category_tag', 'like', "%{$s}%")
-                  ->orWhere('description', 'like', "%{$s}%");
+                  ->orWhere('description', 'like', "%{$s}%")
+                  ->orWhere('slug', 'like', "%{$s}%");
             });
         }
 
-        // Filter by category_tag / sector
-        if ($request->filled('category_tag')) {
-            $query->where('category_tag', $request->category_tag);
-        }
-
-        // Return all without pagination if all=true/1
-        if ($request->boolean('all') || $request->input('all') === '1') {
+        // Return all without pagination if all=true/1 or limit/all query
+        if ($request->boolean('all') || $request->input('all') === '1' || $request->input('limit') === 'all') {
             $brands = $query->latest('id')->get()->map(function ($brand) {
                 return $this->formatBrand($brand);
             });
@@ -50,7 +45,7 @@ class BrandController extends Controller
             ]);
         }
 
-        $perPage = (int) $request->input('per_page', 20);
+        $perPage = (int) $request->input('per_page', 30);
         $paginated = $query->latest('id')->paginate($perPage);
 
         $items = collect($paginated->items())->map(function ($brand) {
@@ -94,7 +89,7 @@ class BrandController extends Controller
     }
 
     /**
-     * Helper to format brand object with clean URLs and capability arrays.
+     * Helper to format brand object with clean URLs.
      */
     protected function formatBrand(Brand $brand): array
     {
@@ -109,25 +104,14 @@ class BrandController extends Controller
             }
         }
 
-        $capabilities = is_array($brand->key_capabilities) 
-            ? $brand->key_capabilities 
-            : (is_string($brand->key_capabilities) ? json_decode($brand->key_capabilities, true) : []);
-
         return [
             'id' => $brand->id,
             'name' => $brand->name,
             'slug' => $brand->slug,
             'logo' => $logo,
             'logo_url' => $logoUrl,
-            'category_tag' => $brand->category_tag ?: 'HEAVY POWER GENERATION',
-            'badge' => $brand->badge ?: 'Flagship Brand',
-            'sub_title' => $brand->sub_title ?: 'GENERATORS & SYNCHRONIZATION',
+            'image' => $logoUrl,
             'description' => $brand->description,
-            'capacity_range' => $brand->capacity_range ?: '50kVA - 3000kVA',
-            'warranty_text' => $brand->warranty_text ?: 'Full Factory Warranty & AMC',
-            'key_capabilities' => is_array($capabilities) ? array_values(array_filter($capabilities)) : [],
-            'cta_text' => $brand->cta_text ?: 'Inquire About Brand',
-            'cta_link' => $brand->cta_link ?: 'tel:01879198066',
             'status' => (bool) $brand->status,
             'created_at' => $brand->created_at ? $brand->created_at->toIso8601String() : null,
             'updated_at' => $brand->updated_at ? $brand->updated_at->toIso8601String() : null,

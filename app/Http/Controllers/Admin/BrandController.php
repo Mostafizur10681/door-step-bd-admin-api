@@ -24,6 +24,7 @@ class BrandController extends Controller
             $s = trim($request->search);
             $query->where(function ($q) use ($s) {
                 $q->where('name', 'like', "%{$s}%")
+                  ->orWhere('description', 'like', "%{$s}%")
                   ->orWhere('slug', 'like', "%{$s}%");
             });
         }
@@ -33,8 +34,8 @@ class BrandController extends Controller
             $query->where('status', $request->status === 'active' ? 1 : 0);
         }
 
-        $perPage = (int) $request->input('per_page', 15);
-        $brands = $query->latest()->paginate($perPage)->withQueryString();
+        $perPage = (int) $request->input('per_page', 18);
+        $brands = $query->latest('id')->paginate($perPage)->withQueryString();
 
         $stats = [
             'total' => Brand::count(),
@@ -55,22 +56,15 @@ class BrandController extends Controller
 
     /**
      * Store a newly created brand in storage.
+     * Only inserts brand name, img (logo), description, and status.
      */
     public function store(Request $request)
     {
         $data = $request->validate([
             'name' => 'required|string|max:255|unique:brands,name',
             'slug' => 'nullable|string|max:255|unique:brands,slug',
-            'category_tag' => 'nullable|string|max:255',
-            'badge' => 'nullable|string|max:255',
-            'sub_title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'capacity_range' => 'nullable|string|max:255',
-            'warranty_text' => 'nullable|string|max:255',
-            'key_capabilities' => 'nullable',
-            'cta_text' => 'nullable|string|max:255',
-            'cta_link' => 'nullable|string|max:255',
-            'logo' => $request->hasFile('logo') ? 'nullable|image|mimes:jpeg,png,jpg,webp,svg,gif|max:10240' : 'nullable|string',
+            'logo' => $request->hasFile('logo') ? 'nullable|image|mimes:jpeg,png,jpg,webp,svg,gif,avif|max:10240' : 'nullable|string',
             'status' => 'nullable|in:0,1,active,inactive',
         ]);
 
@@ -84,18 +78,6 @@ class BrandController extends Controller
             $count++;
         }
 
-        // Normalize key capabilities from string or array
-        if ($request->filled('key_capabilities')) {
-            if (is_string($request->key_capabilities)) {
-                $caps = array_filter(array_map('trim', explode("\n", str_replace("\r", "", $request->key_capabilities))));
-                $data['key_capabilities'] = array_values($caps);
-            } elseif (is_array($request->key_capabilities)) {
-                $data['key_capabilities'] = array_values(array_filter($request->key_capabilities));
-            }
-        } else {
-            $data['key_capabilities'] = [];
-        }
-
         // Normalize status
         if ($request->has('status')) {
             $data['status'] = in_array($request->status, [1, '1', 'active', true], true) ? 1 : 0;
@@ -103,6 +85,7 @@ class BrandController extends Controller
             $data['status'] = $request->has('is_active') ? 1 : 0;
         }
 
+        // Handle logo / image upload
         if ($request->hasFile('logo')) {
             $data['logo'] = $this->uploadImage($request->file('logo'), 'brands');
         } elseif ($request->filled('logo') && is_string($request->logo)) {
@@ -146,16 +129,8 @@ class BrandController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255|unique:brands,name,' . $brand->id,
             'slug' => 'nullable|string|max:255|unique:brands,slug,' . $brand->id,
-            'category_tag' => 'nullable|string|max:255',
-            'badge' => 'nullable|string|max:255',
-            'sub_title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'capacity_range' => 'nullable|string|max:255',
-            'warranty_text' => 'nullable|string|max:255',
-            'key_capabilities' => 'nullable',
-            'cta_text' => 'nullable|string|max:255',
-            'cta_link' => 'nullable|string|max:255',
-            'logo' => $request->hasFile('logo') ? 'nullable|image|mimes:jpeg,png,jpg,webp,svg,gif|max:10240' : 'nullable|string',
+            'logo' => $request->hasFile('logo') ? 'nullable|image|mimes:jpeg,png,jpg,webp,svg,gif,avif|max:10240' : 'nullable|string',
             'status' => 'nullable|in:0,1,active,inactive',
         ]);
 
@@ -169,18 +144,6 @@ class BrandController extends Controller
             $count++;
         }
 
-        // Normalize key capabilities
-        if ($request->has('key_capabilities')) {
-            if (is_string($request->key_capabilities)) {
-                $caps = array_filter(array_map('trim', explode("\n", str_replace("\r", "", $request->key_capabilities))));
-                $data['key_capabilities'] = array_values($caps);
-            } elseif (is_array($request->key_capabilities)) {
-                $data['key_capabilities'] = array_values(array_filter($request->key_capabilities));
-            } else {
-                $data['key_capabilities'] = [];
-            }
-        }
-
         // Normalize status
         if ($request->has('status')) {
             $data['status'] = in_array($request->status, [1, '1', 'active', true], true) ? 1 : 0;
@@ -188,6 +151,7 @@ class BrandController extends Controller
             $data['status'] = $request->has('is_active') ? 1 : 0;
         }
 
+        // Handle image update
         if ($request->hasFile('logo')) {
             if ($brand->logo) {
                 $this->deleteImage($brand->logo);

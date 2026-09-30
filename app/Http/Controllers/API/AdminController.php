@@ -639,6 +639,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255|unique:brands,name',
             'slug' => 'nullable|string|max:255|unique:brands,slug',
             'logo' => 'nullable',
+            'description' => 'nullable|string',
             'status' => 'nullable|boolean',
         ]);
 
@@ -671,6 +672,7 @@ class AdminController extends Controller
             'name' => 'sometimes|required|string|max:255|unique:brands,name,' . $brand->id,
             'slug' => 'nullable|string|max:255|unique:brands,slug,' . $brand->id,
             'logo' => 'nullable',
+            'description' => 'nullable|string',
             'status' => 'nullable|boolean',
         ]);
 

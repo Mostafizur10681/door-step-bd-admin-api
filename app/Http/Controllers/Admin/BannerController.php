@@ -45,6 +45,7 @@ class BannerController extends Controller
                   ->orWhere('title_line1', 'like', "%{$search}%")
                   ->orWhere('title_line2', 'like', "%{$search}%")
                   ->orWhere('subtitle', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
                   ->orWhere('badge', 'like', "%{$search}%")
                   ->orWhere('cta_text', 'like', "%{$search}%")
                   ->orWhere('cta_link', 'like', "%{$search}%");
@@ -76,6 +77,7 @@ class BannerController extends Controller
             'title_line2' => 'nullable|string|max:255',
             'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
             'discount_text' => 'nullable|string|max:255',
             'cta_text' => 'nullable|string|max:100',
             'cta_link' => 'nullable|string|max:255',
@@ -105,6 +107,7 @@ class BannerController extends Controller
 
         $badge = $request->input('badge') ?: $request->input('tagline') ?: null;
         $subtitle = $request->input('subtitle') ?: $request->input('discount_text') ?: null;
+        $description = $request->input('description') ?: null;
         $ctaText = $request->input('cta_text') ?: null;
 
         // Process Desktop / Main Banner Image
@@ -155,6 +158,7 @@ class BannerController extends Controller
             'title_line1' => $titleLine1 ?: null,
             'title_line2' => $titleLine2 ?: null,
             'subtitle' => $subtitle,
+            'description' => $description,
             'cta_text' => $ctaText,
             'cta_link' => $request->input('cta_link') ?: '/',
             'image' => $image,
@@ -188,6 +192,7 @@ class BannerController extends Controller
             'title_line2' => 'nullable|string|max:255',
             'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
             'discount_text' => 'nullable|string|max:255',
             'cta_text' => 'nullable|string|max:100',
             'cta_link' => 'nullable|string|max:255',
@@ -220,6 +225,7 @@ class BannerController extends Controller
 
         $badge = $request->input('badge') ?: $request->input('tagline') ?: null;
         $subtitle = $request->input('subtitle') ?: $request->input('discount_text') ?: null;
+        $description = $request->input('description') ?: null;
         $ctaText = $request->input('cta_text') ?: null;
 
         // Process Desktop Image
@@ -272,6 +278,7 @@ class BannerController extends Controller
             'title_line1' => $titleLine1 ?: null,
             'title_line2' => $titleLine2 ?: null,
             'subtitle' => $subtitle,
+            'description' => $description,
             'cta_text' => $ctaText,
             'cta_link' => $request->input('cta_link') ?: '/',
             'image' => $image,

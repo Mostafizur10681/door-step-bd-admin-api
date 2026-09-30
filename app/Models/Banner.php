@@ -14,6 +14,7 @@ class Banner extends Model
         'title_line1',
         'title_line2',
         'subtitle',
+        'description',
         'image',
         'mobile_image',
         'left_image',

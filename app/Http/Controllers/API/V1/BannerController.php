@@ -41,6 +41,7 @@ class BannerController extends Controller
             'titleLine1' => 'nullable|string|max:255',
             'titleLine2' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
             'discount_text' => 'nullable|string|max:255',
             'discountText' => 'nullable|string|max:255',
             'image' => 'nullable',
@@ -68,6 +69,7 @@ class BannerController extends Controller
         $titleLine2 = $validated['title_line2'] ?? $validated['titleLine2'] ?? null;
         $title = $validated['title'] ?? trim(($titleLine1 ?? '') . ' ' . ($titleLine2 ?? '')) ?: null;
         $subtitle = $validated['subtitle'] ?? $validated['discount_text'] ?? $validated['discountText'] ?? null;
+        $description = $validated['description'] ?? null;
         $badge = $validated['badge'] ?? $validated['tagline'] ?? null;
         $ctaText = $validated['cta_text'] ?? $validated['ctaText'] ?? null;
         $ctaLink = $validated['cta_link'] ?? $validated['ctaLink'] ?? $validated['link'] ?? '/';
@@ -114,6 +116,7 @@ class BannerController extends Controller
             'title_line1' => $titleLine1,
             'title_line2' => $titleLine2,
             'subtitle' => $subtitle,
+            'description' => $description,
             'image' => $image,
             'mobile_image' => $mobileImage ?: $image,
             'left_image' => $leftImage,
@@ -152,6 +155,7 @@ class BannerController extends Controller
             'titleLine1' => 'nullable|string|max:255',
             'titleLine2' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
             'discount_text' => 'nullable|string|max:255',
             'discountText' => 'nullable|string|max:255',
             'image' => 'nullable',
@@ -191,6 +195,9 @@ class BannerController extends Controller
 
         if (array_key_exists('subtitle', $validated) || array_key_exists('discount_text', $validated) || array_key_exists('discountText', $validated)) {
             $updateData['subtitle'] = $validated['subtitle'] ?? $validated['discount_text'] ?? $validated['discountText'] ?? null;
+        }
+        if (array_key_exists('description', $validated)) {
+            $updateData['description'] = $validated['description'];
         }
         if (array_key_exists('badge', $validated) || array_key_exists('tagline', $validated)) {
             $updateData['badge'] = $validated['badge'] ?? $validated['tagline'] ?? null;
