@@ -95,7 +95,7 @@
         <div class="flex items-center h-16 px-4 border-b border-slate-200 dark:border-slate-800/80" :class="sidebarCollapsed ? 'justify-center px-2' : 'justify-between px-5'">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 group overflow-hidden">
                 <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white p-1 border border-slate-200/80 dark:border-slate-700/80 shadow-xs shrink-0 group-hover:scale-105 transition-transform">
-                    <img src="{{ asset('favicon-32x32.png') }}" alt="Door Step BD" class="h-7 w-7 object-contain">
+                    <img src="{{ asset('favicon-32x32.png') }}?v={{ file_exists(public_path('favicon-32x32.png')) ? filemtime(public_path('favicon-32x32.png')) : 1 }}" alt="Door Step BD" class="h-7 w-7 object-contain">
                 </div>
                 <div x-show="!sidebarCollapsed" class="flex flex-col min-w-0">
                     <span class="tracking-tight text-slate-900 dark:text-white font-black text-base leading-tight truncate">Door Step BD</span>
@@ -119,100 +119,7 @@
                 <span x-show="!sidebarCollapsed">Dashboard</span>
             </a>
 
-            <!-- Product Menu (Collapsible) -->
-            <div x-data="{ open: {{ request()->is('admin/products*') ? 'true' : 'false' }} }" class="space-y-1">
-                <button 
-                    @click="if(sidebarCollapsed) { sidebarCollapsed = false; open = true; } else { open = !open; }" 
-                    type="button" 
-                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 {{ request()->is('admin/products*') ? 'bg-slate-100 dark:bg-slate-800/80 text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-white' }}"
-                    :class="sidebarCollapsed && 'justify-center px-2'"
-                    title="Products"
-                >
-                    <div class="flex items-center gap-3">
-                        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
-                        </svg>
-                        <span x-show="!sidebarCollapsed">Products</span>
-                    </div>
-                    <svg x-show="!sidebarCollapsed" class="h-4 w-4 text-slate-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <div x-show="open && !sidebarCollapsed" x-collapse class="pl-4 pr-1 py-1 space-y-1 text-xs">
-                    <a href="{{ route('admin.products.index') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ (request()->routeIs('admin.products.index') || request()->routeIs('admin.products.edit')) ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> All Products
-                    </a>
-                    <a href="{{ route('admin.products.create') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.products.create') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Add Product
-                    </a>
-                </div>
-            </div>
 
-            <!-- Categories Menu (Collapsible) -->
-            <div x-data="{ open: {{ (request()->is('admin/categories*') || request()->is('admin/sub-categories*')) ? 'true' : 'false' }} }" class="space-y-1">
-                <button 
-                    @click="if(sidebarCollapsed) { sidebarCollapsed = false; open = true; } else { open = !open; }" 
-                    type="button" 
-                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 {{ (request()->is('admin/categories*') || request()->is('admin/sub-categories*')) ? 'bg-slate-100 dark:bg-slate-800/80 text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-white' }}"
-                    :class="sidebarCollapsed && 'justify-center px-2'"
-                    title="Categories"
-                >
-                    <div class="flex items-center gap-3">
-                        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
-                        </svg>
-                        <span x-show="!sidebarCollapsed">Categories</span>
-                    </div>
-                    <svg x-show="!sidebarCollapsed" class="h-4 w-4 text-slate-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <div x-show="open && !sidebarCollapsed" x-collapse class="pl-4 pr-1 py-1 space-y-1 text-xs">
-                    <a href="{{ route('admin.categories.index') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.categories.index') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Main Categories
-                    </a>
-                    <a href="{{ route('admin.categories.create') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.categories.create') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Add Category
-                    </a>
-                    <a href="{{ route('admin.sub-categories.index') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.sub-categories.index') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Sub Categories
-                    </a>
-                    <a href="{{ route('admin.sub-categories.create') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.sub-categories.create') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Add Sub Category
-                    </a>
-                </div>
-            </div>
-
-
-
-            <!-- Attributes Menu (Collapsible) -->
-            <div x-data="{ open: {{ request()->is('admin/attributes*') ? 'true' : 'false' }} }" class="space-y-1">
-                <button 
-                    @click="if(sidebarCollapsed) { sidebarCollapsed = false; open = true; } else { open = !open; }" 
-                    type="button" 
-                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 {{ request()->is('admin/attributes*') ? 'bg-slate-100 dark:bg-slate-800/80 text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-white' }}"
-                    :class="sidebarCollapsed && 'justify-center px-2'"
-                    title="Attributes"
-                >
-                    <div class="flex items-center gap-3">
-                        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
-                        </svg>
-                        <span x-show="!sidebarCollapsed">Attributes</span>
-                    </div>
-                    <svg x-show="!sidebarCollapsed" class="h-4 w-4 text-slate-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <div x-show="open && !sidebarCollapsed" x-collapse class="pl-4 pr-1 py-1 space-y-1 text-xs">
-                    <a href="{{ route('admin.attributes.index') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.attributes.index') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Attributes List
-                    </a>
-                    <a href="{{ route('admin.attributes.create') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.attributes.create') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Add Attribute
-                    </a>
-                </div>
-            </div>
 
             <!-- Our Services Menu (Collapsible) -->
             <div x-data="{ open: {{ request()->is('admin/services*') ? 'true' : 'false' }} }" class="space-y-1">
@@ -243,71 +150,7 @@
                 </div>
             </div>
 
-            <!-- Orders Menu (Collapsible) -->
-            <div x-data="{ open: {{ request()->is('admin/orders*') ? 'true' : 'false' }} }" class="space-y-1">
-                <button 
-                    @click="if(sidebarCollapsed) { sidebarCollapsed = false; open = true; } else { open = !open; }" 
-                    type="button" 
-                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 {{ request()->is('admin/orders*') ? 'bg-slate-100 dark:bg-slate-800/80 text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-white' }}"
-                    :class="sidebarCollapsed && 'justify-center px-2'"
-                    title="Orders"
-                >
-                    <div class="flex items-center gap-3">
-                        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                        </svg>
-                        <span x-show="!sidebarCollapsed">Orders</span>
-                    </div>
-                    <div class="flex items-center gap-1.5" x-show="!sidebarCollapsed">
-                        @if($pendingOrdersCount > 0)
-                            <span class="px-1.5 py-0.5 text-[10px] font-bold bg-amber-500 text-white rounded-full">{{ $pendingOrdersCount }}</span>
-                        @endif
-                        <svg class="h-4 w-4 text-slate-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </div>
-                </button>
-                <div x-show="open && !sidebarCollapsed" x-collapse class="pl-4 pr-1 py-1 space-y-1 text-xs">
-                    <a href="{{ route('admin.orders.index') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.orders.index') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Order List
-                    </a>
-                    <a href="{{ route('admin.orders.payment-status') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.orders.payment-status') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Payment Status
-                    </a>
-                    <a href="{{ route('admin.orders.order-status') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.orders.order-status') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Order Status
-                    </a>
-                </div>
-            </div>
 
-            <!-- Coupons Menu (Collapsible) -->
-            <div x-data="{ open: {{ request()->is('admin/coupons*') ? 'true' : 'false' }} }" class="space-y-1">
-                <button 
-                    @click="if(sidebarCollapsed) { sidebarCollapsed = false; open = true; } else { open = !open; }" 
-                    type="button" 
-                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 {{ request()->is('admin/coupons*') ? 'bg-slate-100 dark:bg-slate-800/80 text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-white' }}"
-                    :class="sidebarCollapsed && 'justify-center px-2'"
-                    title="Coupons"
-                >
-                    <div class="flex items-center gap-3">
-                        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
-                        </svg>
-                        <span x-show="!sidebarCollapsed">Coupons</span>
-                    </div>
-                    <svg x-show="!sidebarCollapsed" class="h-4 w-4 text-slate-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <div x-show="open && !sidebarCollapsed" x-collapse class="pl-4 pr-1 py-1 space-y-1 text-xs">
-                    <a href="{{ route('admin.coupons.index') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ (request()->routeIs('admin.coupons.index') || request()->routeIs('admin.coupons.edit')) ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Coupon List
-                    </a>
-                    <a href="{{ route('admin.coupons.create') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.coupons.create') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Create Coupon
-                    </a>
-                </div>
-            </div>
 
             <!-- Customers -->
             <a 
@@ -387,18 +230,7 @@
                 </div>
             </div>
 
-            <!-- Wishlist -->
-            <a 
-                href="{{ route('admin.wishlist.index') }}" 
-                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 {{ request()->is('admin/wishlist*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 font-semibold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-white' }}"
-                :class="sidebarCollapsed && 'justify-center px-2'"
-                title="Wishlist"
-            >
-                <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                </svg>
-                <span x-show="!sidebarCollapsed">Wishlist</span>
-            </a>
+
 
             <!-- Partners Menu (Collapsible) -->
             <div x-data="{ open: {{ request()->is('admin/partners*') ? 'true' : 'false' }} }" class="space-y-1">
@@ -496,18 +328,7 @@
                 </div>
             </div>
 
-            <!-- Subscriptions -->
-            <a 
-                href="{{ route('admin.subscriptions.index') }}" 
-                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 {{ request()->is('admin/subscriptions*') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 font-semibold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-white' }}"
-                :class="sidebarCollapsed && 'justify-center px-2'"
-                title="Subscriptions"
-            >
-                <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                </svg>
-                <span x-show="!sidebarCollapsed">Subscriptions</span>
-            </a>
+
 
             <!-- Banners -->
             <a 
@@ -522,38 +343,7 @@
                 <span x-show="!sidebarCollapsed">Banners</span>
             </a>
 
-            <!-- Locations Menu (Collapsible) -->
-            <div x-data="{ open: {{ request()->is('admin/locations*') ? 'true' : 'false' }} }" class="space-y-1">
-                <button 
-                    @click="if(sidebarCollapsed) { sidebarCollapsed = false; open = true; } else { open = !open; }" 
-                    type="button" 
-                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 {{ request()->is('admin/locations*') ? 'bg-slate-100 dark:bg-slate-800/80 text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-white' }}"
-                    :class="sidebarCollapsed && 'justify-center px-2'"
-                    title="Locations"
-                >
-                    <div class="flex items-center gap-3">
-                        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-                        </svg>
-                        <span x-show="!sidebarCollapsed">Locations</span>
-                    </div>
-                    <svg x-show="!sidebarCollapsed" class="h-4 w-4 text-slate-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <div x-show="open && !sidebarCollapsed" x-collapse class="pl-4 pr-1 py-1 space-y-1 text-xs">
-                    <a href="{{ route('admin.locations.divisions') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.locations.divisions') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Divisions
-                    </a>
-                    <a href="{{ route('admin.locations.districts') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.locations.districts') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Districts
-                    </a>
-                    <a href="{{ route('admin.locations.thanas') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.locations.thanas') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
-                        <span class="mr-2">○</span> Thanas
-                    </a>
-                </div>
-            </div>
+
 
             <!-- About Page Settings -->
             <a 
@@ -682,7 +472,7 @@
         <div class="flex items-center justify-between h-16 px-5 border-b border-slate-200 dark:border-slate-800">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5">
                 <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-white p-1 border border-slate-200/80 dark:border-slate-700/80 shadow-xs shrink-0">
-                    <img src="{{ asset('favicon-32x32.png') }}" alt="Door Step BD" class="h-6 w-6 object-contain">
+                    <img src="{{ asset('favicon-32x32.png') }}?v={{ file_exists(public_path('favicon-32x32.png')) ? filemtime(public_path('favicon-32x32.png')) : 1 }}" alt="Door Step BD" class="h-6 w-6 object-contain">
                 </div>
                 <div class="flex flex-col">
                     <span class="tracking-tight text-slate-900 dark:text-white font-black text-base leading-tight">Door Step BD</span>
@@ -697,12 +487,7 @@
         </div>
         <div class="flex-1 px-4 py-4 overflow-y-auto space-y-1 text-sm font-medium">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Dashboard</a>
-            <a href="{{ route('admin.products.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/products*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Products</a>
-            <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ (request()->is('admin/categories*') || request()->is('admin/sub-categories*')) ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Categories</a>
-            <a href="{{ route('admin.attributes.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/attributes*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Attributes</a>
             <a href="{{ route('admin.services.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/services*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Our Services</a>
-            <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/orders*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Orders</a>
-            <a href="{{ route('admin.coupons.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/coupons*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Coupons</a>
             <a href="{{ route('admin.banners.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/banners*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Banners</a>
             <a href="{{ route('admin.about.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/about*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">About Page</a>
             <a href="{{ route('admin.contact-settings.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/contact-settings*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Contact Page</a>
