@@ -121,6 +121,41 @@
 
 
 
+            <!-- Categories Menu (Collapsible) -->
+            <div x-data="{ open: {{ (request()->is('admin/categories*') || request()->is('admin/sub-categories*')) ? 'true' : 'false' }} }" class="space-y-1">
+                <button 
+                    @click="if(sidebarCollapsed) { sidebarCollapsed = false; open = true; } else { open = !open; }" 
+                    type="button" 
+                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 {{ (request()->is('admin/categories*') || request()->is('admin/sub-categories*')) ? 'bg-slate-100 dark:bg-slate-800/80 text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-slate-900 dark:hover:text-white' }}"
+                    :class="sidebarCollapsed && 'justify-center px-2'"
+                    title="Categories"
+                >
+                    <div class="flex items-center gap-3">
+                        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3" />
+                        </svg>
+                        <span x-show="!sidebarCollapsed">Categories</span>
+                    </div>
+                    <svg x-show="!sidebarCollapsed" class="h-4 w-4 text-slate-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div x-show="open && !sidebarCollapsed" x-collapse class="pl-4 pr-1 py-1 space-y-1 text-xs">
+                    <a href="{{ route('admin.categories.index') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ (request()->routeIs('admin.categories.index') || request()->routeIs('admin.categories.edit')) ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
+                        <span class="mr-2">○</span> Main Categories
+                    </a>
+                    <a href="{{ route('admin.categories.create') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.categories.create') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
+                        <span class="mr-2">○</span> Add Category
+                    </a>
+                    <a href="{{ route('admin.sub-categories.index') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ (request()->routeIs('admin.sub-categories.index') || request()->routeIs('admin.sub-categories.edit')) ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
+                        <span class="mr-2">○</span> Sub Categories
+                    </a>
+                    <a href="{{ route('admin.sub-categories.create') }}" class="flex items-center px-3.5 py-2 rounded-xl border-l-2 transition-all {{ request()->routeIs('admin.sub-categories.create') ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 font-bold border-emerald-500' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent' }}">
+                        <span class="mr-2">○</span> Add Sub Category
+                    </a>
+                </div>
+            </div>
+
             <!-- Our Services Menu (Collapsible) -->
             <div x-data="{ open: {{ request()->is('admin/services*') ? 'true' : 'false' }} }" class="space-y-1">
                 <button 
@@ -487,6 +522,7 @@
         </div>
         <div class="flex-1 px-4 py-4 overflow-y-auto space-y-1 text-sm font-medium">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Dashboard</a>
+            <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ (request()->is('admin/categories*') || request()->is('admin/sub-categories*')) ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Categories</a>
             <a href="{{ route('admin.services.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/services*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Our Services</a>
             <a href="{{ route('admin.banners.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/banners*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">Banners</a>
             <a href="{{ route('admin.about.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->is('admin/about*') ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/70 hover:text-emerald-600 dark:hover:text-emerald-400' }}">About Page</a>
